@@ -1,8 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
+﻿using System.Diagnostics;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using WebinarAutentication.Models;
@@ -21,7 +20,11 @@ namespace WebinarAutentication.Controllers
             return View();
         }
 
-        public IActionResult Privacy() {
+        [Authorize]
+        public async Task<IActionResult> Privacy() {
+            var access_token = await this.HttpContext.GetTokenAsync("access_token");
+            var id_token = await this.HttpContext.GetTokenAsync("id_token");
+
             return View();
         }
 
