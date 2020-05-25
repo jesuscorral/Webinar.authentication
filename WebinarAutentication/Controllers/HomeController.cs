@@ -20,7 +20,7 @@ namespace WebinarAutentication.Controllers
             return View();
         }
 
-        [Authorize]
+        [Authorize(Policy = "my-policy-1")]
         public async Task<IActionResult> Privacy() {
             var access_token = await this.HttpContext.GetTokenAsync("access_token");
             var id_token = await this.HttpContext.GetTokenAsync("id_token");

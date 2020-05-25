@@ -1,10 +1,14 @@
+using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Net.Http.Headers;
+using WebinarAutentication.Authentication;
 
 namespace WebinarAutentication
 {
@@ -40,6 +44,23 @@ namespace WebinarAutentication
 
                 setup.SaveTokens = true;
             }).AddCookie();
+
+            services.AddAuthorization(setup => {
+                // Las polizas de componen de requerimientos donde se indica el requerimiento. Por ejemplo "ser mayor de 18"
+                setup.AddPolicy("my-policy-1", builder => 
+                {
+                    //builder.RequireUserName("aaa");
+                    //builder.RequireRole("admin");
+                    //builder.RequireClaim(ClaimTypes.NameIdentifier, "1"); // Desacopla la autorizacion de la logica de la aplicacion, no tenemos de manera declarativa en cada action del controlador los roles que pueden o no pueden acceder a dicha accion
+
+                    builder.AddRequirements(new WebinarAuthroiztionRequirement() {
+                        SomeProperty = "akjdflkas",
+                        AnnotherProperty = "alkdakdjflaks"
+                    }); // Aqui puedo añadir mis propios requirements
+                }); 
+            });
+
+            services.AddSingleton<IAuthorizationHandler, WebinarAuthroiztionRequirementHandler>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
